@@ -1,217 +1,17 @@
-
 <!DOCTYPE html>
-<html lang="zh_cn" ng-app="nullchat" ng-controller="NCController as nc">
-  <head>
-    <title ng-bind-html="nc.showTotalUnreadCount()"> 即时与任何人聊天</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="即时聊天允许聊天，只是分享一个网址。它可以自由使用，没有广告，简单和最好的所有聊天可以通过只需点击一个按钮就可以设置.">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-    <!--Facebook-->
-    <meta property="og:title" content="任何人即时聊天">
-    <meta property="og:description" content="即时聊天允许聊天，只是分享一个网址。它可以自由使用，没有广告，简单和最好的所有聊天可以通过只需点击一个按钮就可以设置.">
-    <meta property="og:image" content="https://cdn.c2cmalls.com/nullchat/assets/instant_cover.png">
-    <!-- Cache expired -->
-    <meta http-equiv="cache-control" content="max-age=0">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">
-    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
-    <meta http-equiv="pragma" content="no-cache">
-	  <meta name="mobile-web-app-capable" content="yes">
-	         <!-- Web Application Manifest -->
-       <link rel="manifest" href="//cdn.c2cmalls.com/nullchat/manifest.json">
-	  <link rel="icon" sizes="16x16" href="//cdn.c2cmalls.com/nullchat/16.png">
-  <link rel="icon" sizes="32x32" href="https://cdn.c2cmalls.com/nullchat/32.png">
-    <link rel="stylesheet" href="//font.c2cmalls.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700italic,700,900,900italic">
-    <link href="//font.c2cmalls.com/icon?family=Material+Icons" rel="stylesheet">
-    	<link rel="stylesheet" href="//cdn.c2cmalls.com/nullchat/dist/css/vendor.css">
-    <link rel="stylesheet" href="//cdn.c2cmalls.com/nullchat/dist/css/app.css">
-    <style type="text/css">
-        /**
-         * 隐藏时，角尚未加载和初始化
-         */
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-          display: none !important;
-        }
-    </style>
-  </head>
-  <body layout="row" ng-cloak="">
-  <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
-    <md-toolbar class="md-whiteframe-z1">
-      <h1><i class="material-icons chat-icon devsite-doc-set-nav-active
-                devsite-doc-set-nav-tab gc-analytics-event">chat</i>&nbsp;聊天</h1>
-    </md-toolbar>
-    <md-content>
-      <section ng-repeat="(groupName, chatGroup) in nc.getChatList()">
-        <md-subheader class="md-primary md-sticky">{{ (groupName == 'own' ? '您创建的聊天室' : '您加入的聊天室') }}</md-subheader>
-        <md-list>
-          <md-list-item ng-repeat="(index, chatId) in chatGroup">
-            <md-button ui-sref="chat({ chatId : chatId})" ui-sref-active="active-chat" class="chatList chat-name" ng-class="{ 'chat-loaded': nc.chatLoaded(chatId) }">
-              {{ nc.getChatName(chatId) }} <span class="newMessageCount" ng-if="nc.newMessageCount(chatId) > 0">{{ nc.newMessageCount(chatId) }}</span>
-            </md-button>
-          </md-list-item>
-        </md-list>
-      </section>
-    </md-content>
-    <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="创建聊天室" ng-click="nc.createChat()">
-      <md-tooltip md-direction="left">创建新的聊天室</md-tooltip>
-      <md-icon class="material-icons">add</md-icon>
-    </md-button>
-  </md-sidenav>
- <div flex="" layout="column" tabindex="-1" role="main" class="md-whiteframe-z2">
-    <md-toolbar layout="row" class="md-whiteframe-z1">
-      <div class="md-toolbar-tools">
-      <md-button class="md-icon-button menu" hide-gt-sm="" ng-click="nc.toggleList()" aria-label="显示聊天列表">
-        <md-icon class="material-icons" style="color: white">menu</md-icon>
-      </md-button> 
-      <md-progress-circular ng-if="loadingActivity == true" class="md-accent md-hue-1" md-mode="indeterminate"></md-progress-circular> 
-      <h1 style="padding-left:10px"><a ui-sref="dashboard">即时聊天</a><a href="https://cdn.c2cmalls.com/nullchat/index.html" download>安装</a>
-      <sup style="font-size: 10px;"></sup></h1>
-      <span flex=""></span>
-      <md-button class="md-icon-button" aria-label="名称" ng-click="nc.showNameDialog($event)">
-        <md-tooltip md-direction="left">
-          {{ nc.getUserName() }}
-        </md-tooltip>
-        <md-icon class="material-icons" style="color: white">account_circle</md-icon>
-        <!-- <img holder="holder.js/40x40?theme=gray&text={{ nc.getUserName() | showFirstChar }}" class="md-avatar" ng-if="nc.getUserName() != ''"> -->
-      </md-button>
-      <!-- <span class="userName-toolbar">{{ nc.getUserName() }}</span> -->
-        <!-- <md-button class="md-raised" >
-          创建聊天
-        </md-button> -->
-      </div>
-  </md-toolbar>
- 
-    <md-content flex="" id="content" ui-view=""> 
-    </md-content>
-    <audio id="notification" src="https://cdn.c2cmalls.com/nullchat/assets/notification.mp3" style="display:none;"></audio>
-  </div>
-
-   <!-- Firebase -->
-    <script src="https://cdn.c2cmalls.com/nullchat/dist/js/vendor.js"></script>
-    <script src="https://cdn.c2cmalls.com/nullchat/dist/js/app.js"></script>
+<html lang="zh_cn" ng-app="nullchat" ng-controller="NCController as nc"> <head> <title ng-bind-html="nc.showTotalUnreadCount()"> 即时与任何人聊天</title> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="description" content="即时聊天允许聊天，只是分享一个网址。它可以自由使用，没有广告，简单和最好的所有聊天可以通过只需点击一个按钮就可以设置."> <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"> <!--Facebook--> <meta property="og:title" content="任何人即时聊天"> <meta property="og:description" content="即时聊天允许聊天，只是分享一个网址。它可以自由使用，没有广告，简单和最好的所有聊天可以通过只需点击一个按钮就可以设置."> <meta property="og:image" content="https://cdn.c2cmalls.com/nullchat/assets/instant_cover.png"> <!-- Cache expired --> <meta http-equiv="cache-control" content="max-age=0"> <meta http-equiv="cache-control" content="no-cache"> <meta http-equiv="expires" content="0"> <meta http-equiv="expires" content="Tue, 01 1月1980日 1:00:00 GMT"> <meta http-equiv="pragma" content="no-cache"> <meta name="mobile-web-app-capable" content="yes"> <!-- Web Application Manifest --> <link rel="manifest" href="//cdn.c2cmalls.com/nullchat/manifest.json"> <link rel="icon" sizes="16x16" href="//cdn.c2cmalls.com/nullchat/16.png"> <link rel="icon" sizes="32x32" href="https://cdn.c2cmalls.com/nullchat/32.png"> <link rel="stylesheet" href="//font.c2cmalls.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700italic,700,900,900italic"> <link href="//font.c2cmalls.com/icon?family=Material+Icons" rel="stylesheet"> <link rel="stylesheet" href="//cdn.c2cmalls.com/nullchat/dist/css/vendor.css"> <link rel="stylesheet" href="//cdn.c2cmalls.com/nullchat/dist/css/app.css"> <style type="text/css"> /** * 隐藏时，角尚未加载和初始化 */ [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; } </style> </head> <body layout="row" ng-cloak=""> <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')"> <md-toolbar class="md-whiteframe-z1"> <h1><i class="material-icons chat-icon devsite-doc-set-nav-active devsite-doc-set-nav-tab gc-analytics-event">chat</i>&nbsp;聊天</h1> </md-toolbar> <md-content> <section ng-repeat="(groupName, chatGroup) in nc.getChatList()"> <md-subheader class="md-primary md-sticky">{{ (groupName == 'own' ? '您创建的聊天室' : '您加入的聊天室') }}</md-subheader> <md-list> <md-list-item ng-repeat="(index, chatId) in chatGroup"> <md-button ui-sref="chat({ chatId : chatId})" ui-sref-active="active-chat" class="chatList chat-name" ng-class="{ 'chat-loaded': nc.chatLoaded(chatId) }"> {{ nc.getChatName(chatId) }} <span class="newMessageCount" ng-if="nc.newMessageCount(chatId) > 0">{{ nc.newMessageCount(chatId) }}</span> </md-button> </md-list-item> </md-list> </section> </md-content> <md-button class="md-primary md-fab md-fab-bottom-right" aria-label="创建聊天室" ng-click="nc.createChat()"> <md-tooltip md-direction="left">创建新的聊天室</md-tooltip> <md-icon class="material-icons">add</md-icon> </md-button> </md-sidenav> <div flex="" layout="column" tabindex="-1" role="main" class="md-whiteframe-z2"> <md-toolbar layout="row" class="md-whiteframe-z1"> <div class="md-toolbar-tools"> <md-button class="md-icon-button menu" hide-gt-sm="" ng-click="nc.toggleList()" aria-label="显示聊天列表"> <md-icon class="material-icons" style="color: white">menu</md-icon> </md-button> <md-progress-circular ng-if="loadingActivity == true" class="md-accent md-hue-1" md-mode="indeterminate"></md-progress-circular> <h1 style="padding-left:10px"><a ui-sref="dashboard">即时聊天</a><a href="https://cdn.c2cmalls.com/nullchat/index.html" download>安装</a> <sup style="font-size: 10px;"></sup></h1> <span flex=""></span> <md-button class="md-icon-button" aria-label="名称" ng-click="nc.showNameDialog($event)"> <md-tooltip md-direction="left"> {{ nc.getUserName() }} </md-tooltip> <md-icon class="material-icons" style="color: white">account_circle</md-icon> <!-- <img holder="holder.js/40x40?theme=gray&text={{ nc.getUserName() | showFirstChar }}" class="md-avatar" ng-if="nc.getUserName() != ''"> --> </md-button> <!-- <span class="userName-toolbar">{{ nc.getUserName() }}</span> --> <!-- <md-button class="md-raised" > 创建聊天 </md-button> --> </div> </md-toolbar> <md-content flex="" id="content" ui-view=""> </md-content> <audio id="notification" src="https://cdn.c2cmalls.com/nullchat/assets/notification.mp3" style="display:none;"></audio> </div> <!-- Firebase --> <script src="https://cdn.c2cmalls.com/nullchat/dist/js/vendor.js"></script> <script src="https://cdn.c2cmalls.com/nullchat/dist/js/app.js"></script>
 <!-- 开始的模板 -->
 <script type="text/ng-template" id="views/chatDialog.html">
-<md-dialog aria-label="更改显示名称">
-  <form ng-submit="cd.changeChatName()">
-  <md-toolbar>
-    <div class="md-toolbar-tools">
-      <h2>聊天室设置</h2>
-      <span flex></span>
-      <md-button class="md-icon-button" ng-click="cd.closeDialog()">
-        <md-icon class="material-icons" style="color: white">close</md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
-  <md-dialog-content class="md-padding">
-    <div layout="row">
-      <md-input-container flex>
-            <label>聊天室显示名称</label>
-            <input ng-model="cd.chatName" required>
-        </md-input-container>
-        <md-button type="submit" class="md-fab md-mini md-raised" >
-          <md-icon class="material-icons">check</md-icon>
-        </md-button>
-    </div>
- </md-dialog-content>
-  </form>
+<md-dialog aria-label="更改显示名称"> <form ng-submit="cd.changeChatName()"> <md-toolbar> <div class="md-toolbar-tools"> <h2>聊天室设置</h2> <span flex></span> <md-button class="md-icon-button" ng-click="cd.closeDialog()"> <md-icon class="material-icons" style="color: white">close</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content class="md-padding"> <div layout="row"> <md-input-container flex> <label>聊天室显示名称</label> <input ng-model="cd.chatName" required> </md-input-container> <md-button type="submit" class="md-fab md-mini md-raised" > <md-icon class="material-icons">check</md-icon> </md-button> </div> </md-dialog-content> </form>
 </md-dialog>
 </script>
 <script type="text/ng-template" id="views/chatbox.html">
-<md-content layout="column" scroll-glue  exec-on-scroll-to-top="cb.handleScrollToTop" ng-click="cb.resetUnreadCount()">
-	<div ng-if="scrollLoading" layout layout-align="center"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>
-	<div >
-	<div ng-if="!cb.chatValid" class="center-n-big">没有发现该聊天室</div>
-	<md-list class="stick-top" ng-click="cb.removeFocus()">
-	  <md-list-item ng-switch on="chat.type" class="chat-item" ng-class="{'md-1-line': chat.type=='status', 'md-2-line': chat.type!='status'}" ng-repeat="chat in cb.getChatData() | orderBy : 'timestamp'">
-	  
-		  		<img ng-switch-default holder="holder.js/40x40?theme={{ cb.genUserBg(chat.author) }}&text={{ cb.showOwner(chat.author) | showFirstChar }}" class="md-avatar" ng-if="cb.showOwner(chat.author) != '..'">
-		  		<!-- <img ng-switch-when="image" holder="holder.js/40x40?theme={{ cb.genUserBg(chat.author) }}&text={{ cb.showOwner(chat.author) | showFirstChar }}" class="md-avatar" ng-if="cb.showOwner(chat.author) != '..'"> -->
-			    <div ng-switch-when="status" class="chat-status">
-			      <p>{{ cb.showOwner(chat.author) }} {{ chat.text }} 聊天</p>
-			    </div>
-			    
-	  
-			    <div ng-switch-default class="md-list-item-text chat-text" layout="column">
-					<h3 class="author-text" >{{ cb.showOwner(chat.author) }}</h3>
-					<p ng-if="chat.type=='text'" ng-bind-html="chat.text | linky:'_blank'  | nl2br "></p>
-					<div ng-if="chat.type=='image'" class="chat-image">
-						<a ng-href="{{chat.text}}" title="Image" target="_blank"><img ng-src="{{cb.imageSrc(chat.text)}}" alt="图片"/></a>
-					</div>
-			      <p class="time-ago"><span am-time-ago="chat.timestamp"></span></p>
-			    </div>
-
-	  </md-list-item>
-	  <md-list-item class="md-caption typingStatus">{{ cb.showTypingStatus() }}</md-list-item>
-	</md-list>
-	
-	</div>
-	<div layout="column" class="stick-bottom md-whiteframe-z2" flex ng-if="cb.chatValid" style="background-color: #F7F7F7;">
-		<!--  -->
-		<form ng-submit="cb.sendChat()" ui-keypress="{13:'myFunc($event)'}" layout="row" name="chatForm">
-		        <textarea autocomplete="off" ng-model="cb.chatText" name="chatText" ng-change="cb.changeTypingStatus()" placeholder="说点什么 .." id="chatText" class="chatText" flex maxlength="1000" ng-keydown="cb.handleKeyDown($event)"></textarea>
-		        <md-button ngf-select="cb.uploadFile($file)" ngf-multiple="false" ngf-accept="'image/*'" class="md-icon-button chatAttach" aria-label="附上" ng-if="!cb.uploadProgress">
-		        	<md-icon class="material-icons">insert_photo</md-icon>
-		      	</md-button>
-		      	<md-button ng-if="cb.uploadProgress" class="md-icon-button chatAttach" aria-label="附加进展">
-		        	<md-progress-circular md-mode="determinate" md-diameter="20" ng-value="cb.uploadProgress" ></md-progress-circular>
-		      	</md-button>
-		      	<!--  -->
-		      	<md-menu>
-			      <md-button aria-label="Chat Meanu" class="md-icon-button" ng-click="cb.openChatMenu($mdOpenMenu, $event)">
-			        <md-icon md-menu-origin class="material-icons">more_vert</md-icon>
-			      </md-button>
-			      <md-menu-content width="4">
-			        <md-menu-item>
-			          <md-button ng-click="cb.showShareModal()">
-			            <md-icon md-menu-align-target class="material-icons">share</md-icon>
-			            分享
-			          </md-button>
-			        </md-menu-item>
-			        <md-menu-item ng-if="!cb.isChatOwner()">
-			          <md-button ng-click="cb.leaveChat()">
-			            <md-icon md-menu-align-target class="material-icons">cancel</md-icon>
-			            离开聊天
-			          </md-button>
-			        </md-menu-item>
-			        <!-- if chat owner -->
-			        <md-menu-item ng-if="cb.isChatOwner()">
-			          <md-button ng-click="cb.leaveChat()">
-			            <md-icon md-menu-align-target class="material-icons">delete</md-icon>
-			           删除聊天
-			          </md-button>
-			        </md-menu-item>
-			        <md-menu-divider ng-if="cb.isChatOwner()"></md-menu-divider>
-			        <md-menu-item ng-if="cb.isChatOwner()">
-			          <md-button ng-click="cb.renameChat()">
-			            <md-icon md-menu-align-target class="material-icons">edit</md-icon>
-			            重命名聊天
-			          </md-button>
-			        </md-menu-item>
-			      </md-menu-content>
-			    </md-menu>
-	    		<!-- <div ng-messages="chatForm.chatText.$error">
-		          <div ng-message="required">这是必需的.</div>
-		        </div> -->
-		    <!-- <md-button type="submit" class="md-fab md-mini md-raised" ><md-icon class="material-icons">send</md-icon></md-button> -->
-	    </form>
-	</div>
+<md-content layout="column" scroll-glue exec-on-scroll-to-top="cb.handleScrollToTop" ng-click="cb.resetUnreadCount()"> <div ng-if="scrollLoading" layout layout-align="center"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div> <div > <div ng-if="!cb.chatValid" class="center-n-big">没有发现该聊天室</div> <md-list class="stick-top" ng-click="cb.removeFocus()"> <md-list-item ng-switch on="chat.type" class="chat-item" ng-class="{'md-1-line': chat.type=='status', 'md-2-line': chat.type!='status'}" ng-repeat="chat in cb.getChatData() | orderBy : 'timestamp'"> <img ng-switch-default holder="holder.js/40x40?theme={{ cb.genUserBg(chat.author) }}&text={{ cb.showOwner(chat.author) | showFirstChar }}" class="md-avatar" ng-if="cb.showOwner(chat.author) != '..'"> <!-- <img ng-switch-when="image" holder="holder.js/40x40?theme={{ cb.genUserBg(chat.author) }}&text={{ cb.showOwner(chat.author) | showFirstChar }}" class="md-avatar" ng-if="cb.showOwner(chat.author) != '..'"> --> <div ng-switch-when="status" class="chat-status"> <p>{{ cb.showOwner(chat.author) }} {{ chat.text }} 聊天</p> </div> <div ng-switch-default class="md-list-item-text chat-text" layout="column"> <h3 class="author-text" >{{ cb.showOwner(chat.author) }}</h3> <p ng-if="chat.type=='text'" ng-bind-html="chat.text | linky:'_blank' | nl2br "></p> <div ng-if="chat.type=='image'" class="chat-image"> <a ng-href="{{chat.text}}" title="Image" target="_blank"><img ng-src="{{cb.imageSrc(chat.text)}}" alt="图片"/></a> </div> <p class="time-ago"><span am-time-ago="chat.timestamp"></span></p> </div> </md-list-item> <md-list-item class="md-caption typingStatus">{{ cb.showTypingStatus() }}</md-list-item> </md-list> </div> <div layout="column" class="stick-bottom md-whiteframe-z2" flex ng-if="cb.chatValid" style="background-color: #F7F7F7;"> <!-- --> <form ng-submit="cb.sendChat()" ui-keypress="{13:'myFunc($event)'}" layout="row" name="chatForm"> <textarea autocomplete="off" ng-model="cb.chatText" name="chatText" ng-change="cb.changeTypingStatus()" placeholder="说点什么 .." id="chatText" class="chatText" flex maxlength="1000" ng-keydown="cb.handleKeyDown($event)"></textarea> <md-button ngf-select="cb.uploadFile($file)" ngf-multiple="false" ngf-accept="'image/*'" class="md-icon-button chatAttach" aria-label="附上" ng-if="!cb.uploadProgress"> <md-icon class="material-icons">insert_photo</md-icon> </md-button> <md-button ng-if="cb.uploadProgress" class="md-icon-button chatAttach" aria-label="附加进展"> <md-progress-circular md-mode="determinate" md-diameter="20" ng-value="cb.uploadProgress" ></md-progress-circular> </md-button> <!-- --> <md-menu> <md-button aria-label="Chat Meanu" class="md-icon-button" ng-click="cb.openChatMenu($mdOpenMenu, $event)"> <md-icon md-menu-origin class="material-icons">more_vert</md-icon> </md-button> <md-menu-content width="4"> <md-menu-item> <md-button ng-click="cb.showShareModal()"> <md-icon md-menu-align-target class="material-icons">share</md-icon> 分享 </md-button> </md-menu-item> <md-menu-item ng-if="!cb.isChatOwner()"> <md-button ng-click="cb.leaveChat()"> <md-icon md-menu-align-target class="material-icons">cancel</md-icon> 离开聊天 </md-button> </md-menu-item> <!-- if chat owner --> <md-menu-item ng-if="cb.isChatOwner()"> <md-button ng-click="cb.leaveChat()"> <md-icon md-menu-align-target class="material-icons">delete</md-icon> 删除聊天 </md-button> </md-menu-item> <md-menu-divider ng-if="cb.isChatOwner()"></md-menu-divider> <md-menu-item ng-if="cb.isChatOwner()"> <md-button ng-click="cb.renameChat()"> <md-icon md-menu-align-target class="material-icons">edit</md-icon> 重命名聊天 </md-button> </md-menu-item> </md-menu-content> </md-menu> <!-- <div ng-messages="chatForm.chatText.$error"> <div ng-message="required">这是必需的.</div> </div> --> <!-- <md-button type="submit" class="md-fab md-mini md-raised" ><md-icon class="material-icons">send</md-icon></md-button> --> </form> </div>
 </md-content>
 <div></div>
 </script>
 <script type="text/ng-template" id="views/contactSheet.html">
-<md-bottom-sheet class="md-list md-has-header">
-    <md-subheader>
-        Contact <span class="name">{{ cp.user.name }}</span>:
-    </md-subheader>
-  <md-list>
-      <md-item ng-repeat="item in cp.actions">
-        <md-button ng-click="cp.submitContact(item)" id="item_{{$index}}">
-            <md-icon md-svg-icon="{{ item.icon_url }}"></md-icon>
-            {{item.name}}
-        </md-button>
-      </md-item>
-    </md-list>
+<md-bottom-sheet class="md-list md-has-header"> <md-subheader> Contact <span class="name">{{ cp.user.name }}</span>: </md-subheader> <md-list> <md-item ng-repeat="item in cp.actions"> <md-button ng-click="cp.submitContact(item)" id="item_{{$index}}"> <md-icon md-svg-icon="{{ item.icon_url }}"></md-icon> {{item.name}} </md-button> </md-item> </md-list>
 </md-bottom-sheet>
 </script>
 <script type="text/ng-template" id="views/dashboard.html">
@@ -222,41 +22,10 @@
 <br>
 <p class="md-subhead">非常适合小团队，创造者，开发者和设计者.</p>
 <br>
-<!-- <ul class="home-features"><li><i class="material-icons">done</i> 这是免费的。 </li><li><i class="material-icons">done</i> No ads (we promise)</li><li><i class="material-icons">done</i>  SSL Encrypted</li><li><i class="material-icons">done</i>   随时处理聊天，其永远删除.</li></ul> -->
+<!-- <ul class="home-features"><li><i class="material-icons">done</i> 这是免费的。 </li><li><i class="material-icons">done</i> No ads (we promise)</li><li><i class="material-icons">done</i> SSL Encrypted</li><li><i class="material-icons">done</i> 随时处理聊天，其永远删除.</li></ul> -->
 <div flex="100" layout="row" layout-xs="column" class="hero-features">
-<md-card flex="25" flex-xs="100">
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline"><md-icon class="material-icons">free_breakfast</md-icon></span>
-        <span class="md-subhead">这是免费的!</span>
-      </md-card-title-text>
- </md-card-title>
- </md-card>
-<md-card flex="25" flex-xs="100">
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline"><md-icon class="material-icons">security</md-icon></span>
-        <span class="md-subhead">SSL加密</span>
-      </md-card-title-text>
-    </md-card-title>
- </md-card>
- <md-card flex="25" flex-xs="100">
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline"><md-icon class="material-icons">desktop_mac</md-icon></span>
-        <span class="md-subhead"> 没有广告（我们承诺）</span>
-      </md-card-title-text>
-    </md-card-title>
- </md-card>
- <md-card flex="25" flex-xs="100">
-    <md-card-title>
-      <md-card-title-text>
-        <span class="md-headline"><md-icon class="material-icons">delete</md-icon></span>
-        <span class="md-subhead"> 处置聊天随时随地，其永久删除.</span>
-      </md-card-title-text>
-    </md-card-title>
- </md-card>
- </div>
+<md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">free_breakfast</md-icon></span> <span class="md-subhead">这是免费的!</span> </md-card-title-text> </md-card-title> </md-card>
+<md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">security</md-icon></span> <span class="md-subhead">SSL加密</span> </md-card-title-text> </md-card-title> </md-card> <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">desktop_mac</md-icon></span> <span class="md-subhead"> 没有广告（我们承诺）</span> </md-card-title-text> </md-card-title> </md-card> <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">delete</md-icon></span> <span class="md-subhead"> 处置聊天随时随地，其永久删除.</span> </md-card-title-text> </md-card-title> </md-card> </div>
 <br>
 <p>由开始的 <strong>创建聊天</strong> 或从列表中选择一个</p>
 <p style="margin-top:5px"><a href="#" target="_blank"><img src="https://cdn.c2cmalls.com/friendlychat-master/web/demo/assets/tw.png"></a></p>
@@ -266,52 +35,10 @@
 <center>该网站处于维护模式，请检查回来. </center>
 </script>
 <script type="text/ng-template" id="views/nameDialog.html">
-<md-dialog aria-label="更改显示名称">
-  <form ng-submit="nc.changeUserName()">
-  <md-toolbar>
-    <div class="md-toolbar-tools">
-      <h2>资料</h2>
-      <span flex></span>
-      <md-button class="md-icon-button" ng-click="nc.closeDialog()">
-        <md-icon class="material-icons" style="color: white">close</md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
-  <md-dialog-content class="md-padding">
-    <div layout="row">
-      <md-input-container flex>
-            <label>显示名称</label>
-            <input ng-model="nc.userName" required>
-        </md-input-container>
-        <md-button type="submit" class="md-fab md-mini md-raised" >
-          <md-icon class="material-icons">check</md-icon>
-        </md-button>
-    </div>
-    <!-- <div layout="column">
-      <p>设置</p>
-    </div> -->
-    <div layout="column">
-      <div flex ng-if="!nc.authState" layout="column">
-        <md-button class="button gc-analytics-event" ng-click="nc.authUser('github')" >
-     github登陆
-        </md-button>
-        <div class="login-desc" layout="row">
-          <i class="material-icons">done</i> &nbsp;保存聊天记录 &nbsp;
-          <i class="material-icons">done</i> &nbsp;建立配置文件
-        </div>
-      </div>
-      <div ng-if="nc.authState" flex layout="column">
-        <md-button class="button button-white gc-analytics-event" ng-click="nc.logoutUser()" flex>
-          退出
-        </md-button>
-      </div>
-    </div>
-  </md-dialog-content>
-  </form>
+<md-dialog aria-label="更改显示名称"> <form ng-submit="nc.changeUserName()"> <md-toolbar> <div class="md-toolbar-tools"> <h2>资料</h2> <span flex></span> <md-button class="md-icon-button" ng-click="nc.closeDialog()"> <md-icon class="material-icons" style="color: white">close</md-icon> </md-button> </div> </md-toolbar> <md-dialog-content class="md-padding"> <div layout="row"> <md-input-container flex> <label>显示名称</label> <input ng-model="nc.userName" required> </md-input-container> <md-button type="submit" class="md-fab md-mini md-raised" > <md-icon class="material-icons">check</md-icon> </md-button> </div> <!-- <div layout="column"> <p>设置</p> </div> --> <div layout="column"> <div flex ng-if="!nc.authState" layout="column"> <md-button class="button gc-analytics-event" ng-click="nc.authUser('github')" > github登陆 </md-button> <div class="login-desc" layout="row"> <i class="material-icons">done</i> &nbsp;保存聊天记录 &nbsp; <i class="material-icons">done</i> &nbsp;建立配置文件 </div> </div> <div ng-if="nc.authState" flex layout="column"> <md-button class="button button-white gc-analytics-event" ng-click="nc.logoutUser()" flex> 退出 </md-button> </div> </div> </md-dialog-content> </form>
 </md-dialog>
 </script>
-<!-- 端模板-->
- <script>
+<!-- 端模板--> <script>
 moment.locale("zh_cn",{relativeTime:{future:"在 %s",past:"%s 前",s:"1 秒",m:"一分钟前",mm:"%d 分钟前",h:"一个小时前",hh:"%d 小时前",d:"一天前",dd:"%d 天前",M:"一个月前",MM:"%d 个月前",y:"一年前",yy:"%d 年前"}});
 </script>
 </body>
