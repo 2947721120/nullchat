@@ -11,24 +11,24 @@
 <div></div>
 </script>
 <script type="text/ng-template" id="views/contactSheet.html">
-<md-bottom-sheet class="md-list md-has-header"> <md-subheader> Contact <span class="name">{{ cp.user.name }}</span>: </md-subheader> <md-list> <md-item ng-repeat="item in cp.actions"> <md-button ng-click="cp.submitContact(item)" id="item_{{$index}}"> <md-icon md-svg-icon="{{ item.icon_url }}"></md-icon> {{item.name}} </md-button> </md-item> </md-list>
+<md-bottom-sheet class="md-list md-has-header"> <md-subheader> 联系 <span class="name">{{ cp.user.name }}</span>: </md-subheader> <md-list> <md-item ng-repeat="item in cp.actions"> <md-button ng-click="cp.submitContact(item)" id="item_{{$index}}"> <md-icon md-svg-icon="{{ item.icon_url }}"></md-icon> {{item.name}} </md-button> </md-item> </md-list>
 </md-bottom-sheet>
 </script>
 <script type="text/ng-template" id="views/dashboard.html">
 <div class="dashboard">
-<img src="https://cdn.c2cmalls.com/nullchat/assets/logo_new.png" >
+<img src="assets/logo_new.png" >
 <!-- <p class="md-headline">欢迎来到即时聊天</p> -->
 <p class="md-headline">"即时聊天，让你聊天，只是分享一个网址."</p>
 <br>
 <p class="md-subhead">非常适合小团队，创造者，开发者和设计者.</p>
 <br>
-<!-- <ul class="home-features"><li><i class="material-icons">done</i> 这是免费的。 </li><li><i class="material-icons">done</i> No ads (we promise)</li><li><i class="material-icons">done</i> SSL Encrypted</li><li><i class="material-icons">done</i> 随时处理聊天，其永远删除.</li></ul> -->
+<!-- <ul class="home-features"><li><i class="material-icons">done</i> 这是免费的。 </li><li><i class="material-icons">done</i> 没有广告</li><li><i class="material-icons">done</i> SSL Encrypted</li><li><i class="material-icons">done</i> 随时处理聊天，其永远删除.</li></ul> -->
 <div flex="100" layout="row" layout-xs="column" class="hero-features">
 <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">free_breakfast</md-icon></span> <span class="md-subhead">这是免费的!</span> </md-card-title-text> </md-card-title> </md-card>
 <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">security</md-icon></span> <span class="md-subhead">SSL加密</span> </md-card-title-text> </md-card-title> </md-card> <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">desktop_mac</md-icon></span> <span class="md-subhead"> 没有广告（我们承诺）</span> </md-card-title-text> </md-card-title> </md-card> <md-card flex="25" flex-xs="100"> <md-card-title> <md-card-title-text> <span class="md-headline"><md-icon class="material-icons">delete</md-icon></span> <span class="md-subhead"> 处置聊天随时随地，其永久删除.</span> </md-card-title-text> </md-card-title> </md-card> </div>
 <br>
 <p>由开始的 <strong>创建聊天</strong> 或从列表中选择一个</p>
-<p style="margin-top:5px"><a href="#" target="_blank"><img src="https://cdn.c2cmalls.com/friendlychat-master/web/demo/assets/tw.png"></a></p>
+<p style="margin-top:5px"><a href="#" target="_blank"><img src="assets/tw.png"></a></p>
 </div>
 </script>
 <script type="text/ng-template" id="views/maint.html">
